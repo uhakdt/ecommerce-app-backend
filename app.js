@@ -3,8 +3,8 @@ const app = express();
 const morgan = require('morgan');
 const cors = require('cors');
 require('dotenv/config');
-const authJwt = require('./helpers/jwt');
-const errorHandler = require('./helpers/error-handler');
+const authJwt = require('./auxillary/jwt');
+const errorHandler = require('./auxillary/error-handler');
 
 // Cors
 app.use(cors());
