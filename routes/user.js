@@ -216,4 +216,46 @@ router.post('/api/v1/user/login', async (req, res) => {
   }
 })
 
+// REGISTER USER
+router.post('/api/v1/user/register', async (req, res) => {
+  try {
+    const existingUser = await db.query(
+      'SELECT * FROM public."User" WHERE email = $1;', [
+      req.body.email
+    ])
+
+    if(existingUser.rowCount === 0){
+      const result = await db.query(
+        'INSERT INTO public."User"(name, email, phone, "loginDetailID", "addressID", "dateAndTimeSignUp", "profileImageUrl", "extUserID", "passwordHash") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *', [
+        req.body.name,
+        req.body.email,
+        req.body.phone,
+        req.body.loginDetailID,
+        req.body.addressID,
+        req.body.dateAndTimeSignUp,
+        req.body.profileImageUrl,
+        req.body.extUserID,
+        bcrypt.hashSync(req.body.password, salt)
+      ])
+      res.status(201).json({
+        status: "OK",
+        data: {
+          user: result.rows[0]
+        }
+      })
+    } else {
+      res.status(422).json({
+        status: "User already exists.",
+        data: {
+          user: existingUser.rows[0]
+        }
+      })
+    }
+
+
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 module.exports = router;
