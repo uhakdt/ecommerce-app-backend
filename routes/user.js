@@ -184,16 +184,16 @@ router.post('/api/v1/user/login', async (req, res) => {
     req.body.email
   ])
 
-  if(!user) {
+  if(!user.rows[0]) {
     return res.status(400).json({
       status: "User not found."
     })
   }
-
   if(user && bcrypt.compareSync(req.body.password, user.rows[0].passwordHash)) {
     const token = jwt.sign(
       {
-        userId: user.rows[0].id
+        userId: user.rows[0].id,
+        isAdmin: user.rows[0].isAdmin
       },
       secret,
       {expiresIn : '1d'}

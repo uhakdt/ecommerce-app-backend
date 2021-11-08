@@ -1,13 +1,20 @@
-require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
-
-// Express Setup
 const app = express();
+const morgan = require('morgan');
+const cors = require('cors');
+require('dotenv/config');
+const authJwt = require('./helpers/jwt');
+const errorHandler = require('./helpers/error-handler');
+
+// Cors
 app.use(cors());
+app.options('*', cors())
+
+// Middleware
 app.use(express.json());
 app.use(morgan('dev'));
+app.use(authJwt());
+app.use(errorHandler);
 
 // Routes
 app.use(require('./routes/category.js'));
