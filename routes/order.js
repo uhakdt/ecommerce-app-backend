@@ -62,23 +62,27 @@ router.get('/api/v1/order/:id', async (req, res) => {
       [req.params.id]
     )
 
-    const orderProductsResult = await db.query(
-      'SELECT * FROM public."OrderProduct" WHERE "orderID" = $1;', 
-      [req.params.id]
-    )
-    result.rows[0].orderProducts = orderProductsResult.rows;
-
-    if (result.rowCount > 0) {
+    if(result.rowCount > 0) {
+      const orderProductsResult = await db.query(
+        'SELECT * FROM public."OrderProduct" WHERE "orderID" = $1;', 
+        [req.params.id]
+      )
+      result.rows[0].orderProducts = orderProductsResult.rows;
+  
       res.status(200).json({
         status: "OK",
         data: {
           order: result.rows[0]
         }
       })
+    } else if(result.rowCount === 0){ 
+      res.status(200).json({
+        status: "Order ID did not match"
+      })
     } else {
-      res.status(204).json({
-        status: "ID did not match."
-      });
+      res.status(500).json({
+        status: "Not sure what happened."
+      })
     }
   } catch (error) {
     console.log(error)
