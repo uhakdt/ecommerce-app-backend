@@ -237,14 +237,14 @@ router.post('/api/v1/user/register', async (req, res) => {
         req.body.extUserID,
         bcrypt.hashSync(req.body.password, salt)
       ])
-      res.status(201).json({
+      return res.status(201).json({
         status: "OK",
         data: {
           user: result.rows[0]
         }
       })
     } else {
-      res.status(422).json({
+      return res.status(200).json({
         status: "User already exists.",
         data: {
           user: existingUser.rows[0]

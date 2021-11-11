@@ -1,11 +1,10 @@
 const express = require('express');
 const db = require('../db');
 const request = require('request');
-const GetDateAndTimeNow = require('../auxillary/dateAndTimeNow')
+const GetDateAndTimeNow = require('../auxillary/dateAndTimeNow');
+const { SendEmailToCustomer, SendEmailToKaientai } = require('../auxillary/email');
 
 const router = express.Router();
-
-let currentURL = process.env.URL_DEV;
 
 // GET ORDERS
 router.get('/api/v1/orders', async (req, res) => {
@@ -93,6 +92,7 @@ router.get('/api/v1/order/:id', async (req, res) => {
 router.post('/api/v1/order', async (req, res) => {
   try {
     const cartProducts = req.body.cartProducts;
+    console.log(req.body)
     let totalAmount = 0;
     for (let i = 0; i < cartProducts.length; i++) {
       const e = cartProducts[i];
@@ -138,12 +138,33 @@ router.post('/api/v1/order', async (req, res) => {
         console.log(error);
       });
 
+      let order = resultCreateOrder.rows[0];
+
       res.status(201).json({
         status: "OK",
         data: {
-          order: resultCreateOrder.rows[0]
+          order: order
         }
       });
+      console.log(order)
+      let dataMain = {
+        orderID: order.id,
+        name: order.contactName,
+        email: order.contactEmail,
+        phone: order.contactPhone,
+        address1: order.address1,
+        address2: order.address2,
+        city: order.city,
+        county: order.county,
+        country: order.country,
+        postcode: order.postcode,
+        totalAmount: totalAmount.toFixed(2),
+        dateAndTime: GetDateAndTimeNow(),
+        deliveryInstructions: order.deliveryInstructions,
+      }
+
+      SendEmailToCustomer(dataMain);
+      SendEmailToKaientai(dataMain);
     } else {
       res.status(400).json({
         status: "Order cannnot be created."
