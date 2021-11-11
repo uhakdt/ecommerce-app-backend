@@ -30,12 +30,36 @@ router.get('/api/v1/users', async (req, res) => {
   }
 });
 
-// GET USER
+// GET USER BY ID
 router.get('/api/v1/user/:id', async (req, res) => {
   try {
     const result = await db.query(
       'SELECT id, name, email, phone, "addressID", "dateAndTimeSignUp", "profileImageUrl" FROM public."User" WHERE id = $1;', [
       req.params.id
+    ])
+    if(result.rowCount > 0){
+      res.status(200).json({
+        status: "OK",
+        data: {
+          user: result.rows[0]
+        }
+      })
+    } else {
+      res.status(204).json({
+        status: "ID did not match.",
+      })
+    }
+  } catch (error) {
+    console.log(error)
+  }
+});
+
+// GET USER BY EMAIL
+router.get('/api/v1/user/byEmail/:email', async (req, res) => {
+  try {
+    const result = await db.query(
+      'SELECT id, name, email, phone, "addressID", "dateAndTimeSignUp", "profileImageUrl" FROM public."User" WHERE email = $1;', [
+      req.params.email
     ])
     if(result.rowCount > 0){
       res.status(200).json({

@@ -26,7 +26,6 @@ const SendEmailToKaientai = (dataMain) => {
     Address1: ${dataMain.address1}
     Postcode: ${dataMain.postcode}
     City: ${dataMain.city}
-    Country: ${dataMain.country}
 
     Delivery Instructions: ${dataMain.deliveryInstructions}
     `
@@ -53,15 +52,13 @@ const SendEmailToCustomer = (dataMain) => {
 
     Order Details:
     OrderID: ${dataMain.orderID}
-    UserID: ${dataMain.extUserID}
     Date & Time: ${dataMain.dateAndTime}
     Total Price: ${dataMain.totalAmount}
     
     Shipping Details:
-    Address1: ${dataMain.address1}
-    Postcode: ${dataMain.postcode}
+    First line of address: ${dataMain.address1}
     City: ${dataMain.city}
-    Country: ${dataMain.country}
+    Postcode: ${dataMain.postcode}
 
     If these shipping details are incorrect, please either email us on bauan@kaientai.co.uk or give us a call on: 07830514629
 
