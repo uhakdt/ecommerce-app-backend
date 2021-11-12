@@ -19,6 +19,7 @@ app.use(errorHandler);
 // Routes
 app.use(require('./routes/category.js'));
 app.use(require('./routes/order.js'));
+app.use(require('./routes/postcode.js'));
 app.use(require('./routes/product.js'));
 app.use(require('./routes/user.js'));
 
